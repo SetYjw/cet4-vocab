@@ -1,0 +1,1085 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}</style>
+<title>四级进阶词卡</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,700&family=Noto+Sans+SC:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one centered working column — stats strip, mode tabs, scope bar, then a single surface (index card / quiz / word table) */
+:root{
+  --bg:#eef1f4; --surface:#fbfcfd; --ink:#18212b; --muted:#5b6977; --line:#d3dae2;
+  --accent:#2348c7; --accent-ink:#ffffff; --accent-soft:#e3e9fb;
+  --mark:#ffe36e; --mark-ink:#18212b;
+  --bad:#b83a2a; --bad-bg:#fbe8e4; --mid:#9a6a08; --mid-bg:#fbf0d6; --good:#23714a; --good-bg:#e1f2e8;
+  --f-head:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --f-body:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",Consolas,"Courier New",monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10151b; --surface:#19212a; --ink:#e6ebf0; --muted:#97a5b3; --line:#2b3541;
+  --accent:#86a2ff; --accent-ink:#0d1320; --accent-soft:#1f2a45;
+  --mark:#5c4d0e; --mark-ink:#fff4c2;
+  --bad:#f08a7a; --bad-bg:#3a1f1b; --mid:#e8b85a; --mid-bg:#3a2e14; --good:#6fd19c; --good-bg:#16322a;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10151b; --surface:#19212a; --ink:#e6ebf0; --muted:#97a5b3; --line:#2b3541;
+  --accent:#86a2ff; --accent-ink:#0d1320; --accent-soft:#1f2a45;
+  --mark:#5c4d0e; --mark-ink:#fff4c2;
+  --bad:#f08a7a; --bad-bg:#3a1f1b; --mid:#e8b85a; --mid-bg:#3a2e14; --good:#6fd19c; --good-bg:#16322a;
+  color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+.wrap{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+button,select,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
+h1{font-family:var(--f-head);font-size:28px;line-height:1.2;margin:0;text-wrap:balance;letter-spacing:.01em}
+h1 small{display:block;font-family:var(--f-body);font-size:13px;font-weight:400;color:var(--muted);margin-top:4px;letter-spacing:0}
+
+.stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border:1px solid var(--line);border-radius:var(--r);background:var(--surface);overflow:hidden}
+.stat{padding:10px 12px;border-right:1px solid var(--line);min-width:0}
+.stat:last-child{border-right:0}
+.stat b{display:block;font-family:var(--f-mono);font-size:20px;font-weight:500;font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;color:var(--muted)}
+.bar{height:4px;background:var(--line);border-radius:2px;overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;background:var(--good);width:0;transition:width .4s}
+
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line)}
+.tabs a{padding:8px 14px;text-decoration:none;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;font-weight:500}
+.tabs a[aria-current="page"]{color:var(--ink);border-color:var(--accent)}
+.tabs .sp{flex:1}
+.tabs .kbd-hint{align-self:center;font-size:12px;color:var(--muted)}
+
+.toolbar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;font-size:14px}
+.toolbar label{display:flex;gap:6px;align-items:center;color:var(--muted)}
+select,input[type=search]{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+input[type=search]{min-width:0;flex:1 1 180px}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:7px 14px}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:500}
+.btn.ghost{background:transparent}
+.btn.warn{color:var(--bad)}
+.spacer{flex:1}
+
+/* index card */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;min-height:340px;display:flex;flex-direction:column;
+  box-shadow:0 1px 0 var(--line),0 12px 30px -18px rgba(20,30,50,.35);position:relative;overflow:hidden}
+.card::before{content:"";position:absolute;left:0;right:0;top:64px;border-top:1.5px solid var(--bad);opacity:.35}
+.card-top{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;height:64px;font-size:13px;color:var(--muted);gap:8px}
+.card-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 20px;gap:10px;text-align:center;cursor:pointer;
+  background-image:repeating-linear-gradient(to bottom,transparent 0 31px,var(--line) 31px 32px);background-position:0 20px}
+.hw{font-family:var(--f-head);font-weight:700;font-size:clamp(34px,8vw,52px);line-height:1.1;word-break:break-word}
+.ph{font-family:var(--f-mono);color:var(--muted);font-size:15px;display:flex;align-items:center;gap:8px}
+.say{border:1px solid var(--line);background:var(--bg);border-radius:999px;width:30px;height:30px;display:inline-grid;place-items:center;padding:0}
+.say svg{width:15px;height:15px}
+.back{display:flex;flex-direction:column;gap:8px;align-items:center;max-width:56ch}
+.mean{font-size:19px;font-weight:500}
+.ex{font-family:var(--f-head);font-size:17px;color:var(--muted);font-style:italic}
+mark{background:var(--mark);color:var(--mark-ink);padding:0 2px;border-radius:2px;font-style:normal}
+.tap{font-size:13px;color:var(--muted)}
+.rate{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line)}
+.rate button{border:0;border-right:1px solid var(--line);background:transparent;padding:14px 8px;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:2px}
+.rate button:last-child{border-right:0}
+.rate button small{font-family:var(--f-mono);font-size:11px;color:var(--muted);font-weight:400}
+.rate .r1{color:var(--bad)} .rate .r1:hover{background:var(--bad-bg)}
+.rate .r2{color:var(--mid)} .rate .r2:hover{background:var(--mid-bg)}
+.rate .r3{color:var(--good)} .rate .r3:hover{background:var(--good-bg)}
+.flipbtn{border-top:1px solid var(--line)}
+.flipbtn button{width:100%;border:0;background:transparent;padding:16px;font-weight:500;color:var(--accent)}
+
+.chip{display:inline-block;font-size:12px;padding:1px 8px;border-radius:999px;border:1px solid var(--line);white-space:nowrap;line-height:1.6}
+.chip.l2{color:var(--accent);background:var(--accent-soft);border-color:transparent}
+.chip.l3{color:var(--bad);background:var(--bad-bg);border-color:transparent}
+.chip.new{color:var(--muted)}
+.chip.learn{color:var(--mid);background:var(--mid-bg);border-color:transparent}
+.chip.done{color:var(--good);background:var(--good-bg);border-color:transparent}
+.star{border:0;background:transparent;font-size:18px;line-height:1;color:var(--muted);padding:2px 4px}
+.star[aria-pressed="true"]{color:var(--mid)}
+
+.summary{padding:36px 24px;text-align:center;display:flex;flex-direction:column;gap:14px;align-items:center}
+.summary h2{font-family:var(--f-head);margin:0;font-size:24px}
+.summary .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+
+/* quiz */
+.q-prompt{padding:30px 20px 18px;text-align:center;display:flex;flex-direction:column;gap:8px;align-items:center}
+.q-prompt .hw{font-size:clamp(30px,7vw,44px)}
+.q-prompt .mean{font-size:20px;max-width:40ch}
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:0 20px 20px}
+.opt{text-align:left;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;min-width:0}
+.opt kbd{font-family:var(--f-mono);font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:0 5px;flex:none;margin-top:2px}
+.opt span{min-width:0;word-break:break-word}
+.opt.en span{font-family:var(--f-head);font-size:18px;font-weight:500}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt.right{background:var(--good-bg);border-color:var(--good);color:var(--good)}
+.opt.wrong{background:var(--bad-bg);border-color:var(--bad);color:var(--bad)}
+.opt:disabled{cursor:default}
+.q-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 20px;border-top:1px solid var(--line);font-size:14px;color:var(--muted);flex-wrap:wrap}
+.q-foot .fb{color:var(--ink);min-width:0}
+
+/* list */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:560px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--muted);font-weight:500;letter-spacing:.04em;position:sticky;top:0;background:var(--surface)}
+tr:last-child td{border-bottom:0}
+td.w{font-family:var(--f-head);font-weight:700;font-size:17px;white-space:nowrap}
+td.p{font-family:var(--f-mono);font-size:13px;color:var(--muted);white-space:nowrap}
+td .exs{display:block;color:var(--muted);font-family:var(--f-head);font-style:italic;font-size:14px}
+.count{font-size:13px;color:var(--muted)}
+.empty{padding:30px;text-align:center;color:var(--muted)}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:8px;font-size:14px;z-index:20}
+footer{font-size:12px;color:var(--muted);line-height:1.7}
+
+@media (max-width:620px){
+  .stats{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .stat:nth-child(3){border-right:0}
+  .stat:nth-child(n+4){border-top:1px solid var(--line)}
+  .opts{grid-template-columns:1fr}
+  .tabs .kbd-hint{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <h1>四级进阶词卡<small>CET-4 大纲中超出高中 3500 词、相对少见的词 · 共 <span id="totalN"></span> 个</small></h1>
+  </header>
+
+  <section class="stats" aria-label="学习进度">
+    <div class="stat"><b id="sDone">0</b><span>已掌握</span><div class="bar"><i id="sBar"></i></div></div>
+    <div class="stat"><b id="sLearn">0</b><span>学习中</span></div>
+    <div class="stat"><b id="sDue">0</b><span>现在到期</span></div>
+    <div class="stat"><b id="sNew">0</b><span>未学</span></div>
+    <div class="stat"><b id="sStar">0</b><span>生词本</span></div>
+  </section>
+
+  <nav class="tabs">
+    <a href="#cards" data-tab="cards">背词</a>
+    <a href="#quiz" data-tab="quiz">测验</a>
+    <a href="#list" data-tab="list">词表</a>
+    <span class="sp"></span>
+    <span class="kbd-hint" id="hint"></span>
+  </nav>
+
+  <div class="toolbar" id="scopeBar">
+    <label for="scope">范围
+      <select id="scope">
+        <option value="all">全部词</option>
+        <option value="2">常考（四级新增）</option>
+        <option value="3">偏难（少见）</option>
+        <option value="learn">学习中 / 错词</option>
+        <option value="star">生词本</option>
+      </select>
+    </label>
+    <label for="size" id="sizeWrap">每组
+      <select id="size"><option>10</option><option selected>20</option><option>30</option><option>50</option></select>
+    </label>
+    <label for="dir" id="dirWrap" hidden>题型
+      <select id="dir"><option value="en">看英文选释义</option><option value="zh">看释义选英文</option></select>
+    </label>
+    <span class="spacer"></span>
+    <button class="btn ghost warn" id="reset" type="button">清空进度</button>
+  </div>
+
+  <!-- cards -->
+  <section id="v-cards" class="card" aria-live="polite">
+    <div class="card-top"><span id="cProg"></span><span id="cChips"></span></div>
+    <div id="cMain" class="card-body"></div>
+    <div id="cFlip" class="flipbtn"><button type="button" id="flip">显示释义 <small>(空格)</small></button></div>
+    <div id="cRate" class="rate" hidden>
+      <button type="button" class="r1" data-r="1">不认识<small>1 · 稍后再来</small></button>
+      <button type="button" class="r2" data-r="2">模糊<small>2 · 明天复习</small></button>
+      <button type="button" class="r3" data-r="3">认识<small>3 · 拉长间隔</small></button>
+    </div>
+  </section>
+
+  <!-- quiz -->
+  <section id="v-quiz" class="card" hidden>
+    <div class="card-top"><span id="qScore"></span><span id="qChips"></span></div>
+    <div class="q-prompt" id="qPrompt"></div>
+    <div class="opts" id="qOpts"></div>
+    <div class="q-foot"><span class="fb" id="qFb">选一个答案，或按 1–4</span><button class="btn primary" id="qNext" type="button">下一题 ↵</button></div>
+  </section>
+
+  <!-- list -->
+  <section id="v-list" hidden>
+    <div class="toolbar" style="margin-bottom:10px">
+      <input type="search" id="q" placeholder="搜索单词或中文释义" aria-label="搜索">
+      <label for="lf">状态
+        <select id="lf"><option value="all">全部</option><option value="new">未学</option><option value="learn">学习中</option><option value="done">已掌握</option><option value="star">生词本</option></select>
+      </label>
+      <button class="btn" id="copy" type="button">复制当前词表</button>
+      <span class="count" id="lCount"></span>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th style="width:36px"></th><th>单词</th><th>音标</th><th>释义 / 例句</th><th>状态</th></tr></thead>
+        <tbody id="lBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    进度只保存在当前浏览器里。复习间隔：不认识→本组内再出现；模糊→1 天；认识→3、7、15、30 天逐级拉长，连续认识到 7 天档即算“已掌握”。
+    “常考 / 偏难”是按出题频率的经验分档，不是官方标注；词表以 2016 版四级大纲中超出高中课标 3500 词的部分为主，个别词各版本归档可能不同。
+  </footer>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+const RAW = `abnormal|/æbˈnɔːml/|adj. 反常的，异常的|Abnormal weather has hit the region this year.|2
+abrupt|/əˈbrʌpt/|adj. 突然的；（态度）唐突的|The meeting came to an abrupt end.|2
+absurd|/əbˈsɜːd/|adj. 荒谬的，可笑的|It's absurd to blame the weather for your mistake.|2
+abundance|/əˈbʌndəns/|n. 丰富，充裕|The region has an abundance of natural resources.|2
+accelerate|/əkˈseləreɪt/|v. 加速，促进|The government wants to accelerate economic growth.|2
+accessory|/əkˈsesəri/|n. 附件，配件；从犯|She bought a phone case and other accessories.|3
+accumulate|/əˈkjuːmjəleɪt/|v. 积累，积聚|Dust had accumulated on the shelves.|2
+acknowledge|/əkˈnɒlɪdʒ/|v. 承认；致谢|He acknowledged that he had made a mistake.|2
+acquaint|/əˈkweɪnt/|v. 使熟悉，使认识|Take time to acquaint yourself with the rules.|3
+acquisition|/ˌækwɪˈzɪʃn/|n. 获得；收购；习得|Language acquisition begins in early childhood.|2
+adjacent|/əˈdʒeɪsnt/|adj. 邻近的，毗连的|The hotel is adjacent to the station.|3
+administer|/ədˈmɪnɪstə(r)/|v. 管理；执行；给予（药物）|The fund is administered by a local bank.|3
+adolescent|/ˌædəˈlesnt/|n./adj. 青少年（的）|Adolescents often feel misunderstood by adults.|2
+advocate|/ˈædvəkeɪt/|v. 提倡，主张 n. 拥护者|She advocates a healthier lifestyle.|2
+aggravate|/ˈæɡrəveɪt/|v. 加重，使恶化|Stress can aggravate the illness.|3
+aggressive|/əˈɡresɪv/|adj. 好斗的；积极进取的|The company has an aggressive marketing strategy.|2
+alien|/ˈeɪliən/|adj. 外国的；陌生的 n. 外星人|The idea was completely alien to him.|2
+allocate|/ˈæləkeɪt/|v. 分配，拨给|More money will be allocated to education.|2
+alternate|/ˈɔːltəneɪt/|v. 交替 adj. 交替的|Rainy days alternate with sunny ones.|3
+ambiguous|/æmˈbɪɡjuəs/|adj. 模棱两可的|His answer was deliberately ambiguous.|3
+amend|/əˈmend/|v. 修改，修订|The law was amended last year.|3
+amplify|/ˈæmplɪfaɪ/|v. 放大，增强|The speaker amplifies the sound.|3
+analogy|/əˈnælədʒi/|n. 类比，类似|He drew an analogy between the heart and a pump.|3
+anticipate|/ænˈtɪsɪpeɪt/|v. 预期，预料|We don't anticipate any problems.|2
+apparatus|/ˌæpəˈreɪtəs/|n. 器械，装置|Firefighters wore breathing apparatus.|3
+applaud|/əˈplɔːd/|v. 鼓掌；称赞|The audience applauded loudly.|2
+appraisal|/əˈpreɪzl/|n. 评价，估价|Staff receive an annual performance appraisal.|3
+arbitrary|/ˈɑːbɪtrəri/|adj. 任意的，武断的|The decision seemed completely arbitrary.|3
+array|/əˈreɪ/|n. 一系列，大量；排列|The shop offers a wide array of goods.|3
+ascend|/əˈsend/|v. 上升，登上|The plane ascended into the clouds.|3
+aspire|/əˈspaɪə(r)/|v. 渴望，立志|She aspires to become a doctor.|3
+assault|/əˈsɔːlt/|n./v. 攻击，袭击|He was charged with assault.|3
+assert|/əˈsɜːt/|v. 断言；维护（权利）|She asserted that she was innocent.|2
+assess|/əˈses/|v. 评估，评定|It's hard to assess the damage.|2
+asset|/ˈæset/|n. 资产；有价值的人或物|Her experience is a great asset to the team.|2
+assimilate|/əˈsɪməleɪt/|v. 吸收；同化|Immigrants try to assimilate into local society.|3
+attain|/əˈteɪn/|v. 达到，获得|He attained his goal through hard work.|2
+attorney|/əˈtɜːni/|n. 律师；代理人|She hired an attorney to handle the case.|3
+auction|/ˈɔːkʃn/|n./v. 拍卖|The painting was sold at auction.|3
+authentic|/ɔːˈθentɪk/|adj. 真正的，可信的|This restaurant serves authentic Italian food.|2
+autonomy|/ɔːˈtɒnəmi/|n. 自治；自主权|Teachers want more autonomy in the classroom.|3
+awkward|/ˈɔːkwəd/|adj. 尴尬的；笨拙的|There was an awkward silence.|2
+bachelor|/ˈbætʃələ(r)/|n. 学士；单身汉|She has a bachelor's degree in law.|2
+bankrupt|/ˈbæŋkrʌpt/|adj. 破产的|The firm went bankrupt last year.|2
+barren|/ˈbærən/|adj. 贫瘠的；不结果实的|Nothing grows on this barren land.|3
+batch|/bætʃ/|n. 一批，一组|She baked a batch of cookies.|3
+bewilder|/bɪˈwɪldə(r)/|v. 使迷惑|The instructions bewildered me.|3
+bias|/ˈbaɪəs/|n. 偏见，偏向|There is a bias against older workers.|2
+blunt|/blʌnt/|adj. 钝的；直率的|To be blunt, your plan won't work.|3
+bombard|/bɒmˈbɑːd/|v. 轰炸；连珠炮似地质问|Reporters bombarded him with questions.|3
+boost|/buːst/|v./n. 提高，促进|The good news boosted sales.|2
+boundary|/ˈbaʊndri/|n. 边界，界限|The river forms the boundary between the two countries.|2
+breed|/briːd/|v. 繁殖；培育 n. 品种|Pandas rarely breed in captivity.|2
+brittle|/ˈbrɪtl/|adj. 易碎的，脆弱的|Bones become brittle with age.|3
+browse|/braʊz/|v. 浏览；随便看看|I was browsing the Internet all evening.|2
+bulk|/bʌlk/|n. 大部分；大量|The bulk of the work is done.|3
+bureau|/ˈbjʊərəʊ/|n. 局，处，所|She works at the Bureau of Statistics.|3
+bureaucracy|/bjʊəˈrɒkrəsi/|n. 官僚主义；官僚机构|Too much bureaucracy slows everything down.|3
+cafeteria|/ˌkæfəˈtɪəriə/|n. 自助餐厅|We had lunch in the school cafeteria.|2
+capsule|/ˈkæpsjuːl/|n. 胶囊；太空舱|Take one capsule twice a day.|3
+casual|/ˈkæʒuəl/|adj. 随便的；偶然的|He wore casual clothes to the party.|2
+catalogue|/ˈkætəlɒɡ/|n. 目录|Look it up in the library catalogue.|2
+cater|/ˈkeɪtə(r)/|v. 迎合；提供饮食|The hotel caters for business travellers.|3
+cautious|/ˈkɔːʃəs/|adj. 谨慎的|Be cautious when driving at night.|2
+cease|/siːs/|v. 停止|The factory ceased production last month.|2
+certificate|/səˈtɪfɪkət/|n. 证书|You need a birth certificate to apply.|2
+cherish|/ˈtʃerɪʃ/|v. 珍爱，怀有|I cherish the time we spent together.|2
+chronic|/ˈkrɒnɪk/|adj. 慢性的；长期的|He suffers from chronic back pain.|3
+circulate|/ˈsɜːkjəleɪt/|v. 循环；流传|Rumours circulated quickly around the office.|2
+clarify|/ˈklærəfaɪ/|v. 澄清，阐明|Could you clarify what you mean?|2
+cling|/klɪŋ/|v. 紧抓；坚持|The child clung to his mother.|3
+clumsy|/ˈklʌmzi/|adj. 笨拙的|I'm so clumsy that I broke another cup.|2
+coherent|/kəʊˈhɪərənt/|adj. 连贯的，条理清楚的|She gave a coherent explanation.|3
+coincide|/ˌkəʊɪnˈsaɪd/|v. 同时发生；相符|My birthday coincides with the festival.|3
+collaborate|/kəˈlæbəreɪt/|v. 合作|The two firms collaborated on the project.|2
+collide|/kəˈlaɪd/|v. 碰撞；冲突|Two cars collided on the bridge.|3
+commence|/kəˈmens/|v. 开始|The ceremony will commence at noon.|3
+commodity|/kəˈmɒdəti/|n. 商品|Oil is a valuable commodity.|2
+compatible|/kəmˈpætəbl/|adj. 兼容的；合得来的|This software is compatible with my laptop.|2
+compel|/kəmˈpel/|v. 强迫，迫使|He was compelled to resign.|2
+compensate|/ˈkɒmpenseɪt/|v. 补偿，赔偿|Nothing can compensate for the loss of a loved one.|2
+compile|/kəmˈpaɪl/|v. 编辑，汇编|They compiled a list of names.|3
+complement|/ˈkɒmplɪment/|v. 补充，与…相配|The wine complements the food perfectly.|3
+comply|/kəmˈplaɪ/|v. 遵守，服从|All products must comply with safety rules.|2
+comprehensive|/ˌkɒmprɪˈhensɪv/|adj. 全面的，综合的|We carried out a comprehensive survey.|2
+comprise|/kəmˈpraɪz/|v. 包括，由…组成|The class comprises 30 students.|2
+compulsory|/kəmˈpʌlsəri/|adj. 义务的，强制的|Education is compulsory until the age of 16.|2
+conceal|/kənˈsiːl/|v. 隐藏，隐瞒|She tried to conceal her anger.|2
+concede|/kənˈsiːd/|v. 承认；让步|He conceded that he was wrong.|3
+conceive|/kənˈsiːv/|v. 构想；怀孕|I can't conceive of a better plan.|3
+condense|/kənˈdens/|v. 浓缩；冷凝|Steam condenses into water on the window.|3
+confer|/kənˈfɜː(r)/|v. 授予；商讨|An honorary degree was conferred on him.|3
+confine|/kənˈfaɪn/|v. 限制；禁闭|Please confine your remarks to the topic.|2
+confront|/kənˈfrʌnt/|v. 面对，对抗|We must confront the problem directly.|2
+conform|/kənˈfɔːm/|v. 遵守；顺从|You must conform to the regulations.|3
+consensus|/kənˈsensəs/|n. 一致意见，共识|They finally reached a consensus.|2
+consolidate|/kənˈsɒlɪdeɪt/|v. 巩固，合并|The firm consolidated its position in the market.|3
+conspicuous|/kənˈspɪkjuəs/|adj. 显眼的|He felt conspicuous in his bright suit.|3
+constitute|/ˈkɒnstɪtjuːt/|v. 组成，构成|Women constitute half the workforce.|2
+contaminate|/kənˈtæmɪneɪt/|v. 污染，弄脏|The water was contaminated with chemicals.|3
+contemplate|/ˈkɒntəmpleɪt/|v. 沉思；打算|She is contemplating moving abroad.|3
+contempt|/kənˈtempt/|n. 轻视，蔑视|He looked at her with contempt.|3
+contend|/kənˈtend/|v. 竞争；声称|Three teams are contending for the title.|3
+contradict|/ˌkɒntrəˈdɪkt/|v. 反驳；与…矛盾|The evidence contradicts his statement.|2
+controversial|/ˌkɒntrəˈvɜːʃl/|adj. 有争议的|It was a controversial decision.|2
+convene|/kənˈviːn/|v. 召集，集合|The committee will convene next week.|3
+conversion|/kənˈvɜːʃn/|n. 转变，转换|Solar panels allow the conversion of sunlight into energy.|2
+convict|/kənˈvɪkt/|v. 证明…有罪 n. 罪犯|He was convicted of theft.|3
+cordial|/ˈkɔːdiəl/|adj. 热诚的，友好的|We received a cordial welcome.|3
+corporate|/ˈkɔːpərət/|adj. 公司的；共同的|Every company has its own corporate culture.|2
+correspondent|/ˌkɒrəˈspɒndənt/|n. 记者，通讯员|Here is a report from our Beijing correspondent.|2
+counterpart|/ˈkaʊntəpɑːt/|n. 对应的人或物|The minister met his French counterpart.|3
+credible|/ˈkredəbl/|adj. 可信的|She is a credible witness.|3
+criterion|/kraɪˈtɪəriən/|n. 标准（复数 criteria）|What criteria are used to judge the essays?|2
+crude|/kruːd/|adj. 天然的；粗糙的；粗鲁的|The price of crude oil has risen.|3
+crumble|/ˈkrʌmbl/|v. 粉碎；崩溃|The old wall was crumbling.|3
+cumulative|/ˈkjuːmjələtɪv/|adj. 累积的|Stress has a cumulative effect on health.|3
+curb|/kɜːb/|v./n. 抑制，控制|New measures were taken to curb inflation.|3
+curriculum|/kəˈrɪkjələm/|n. 课程|Coding is now part of the school curriculum.|2
+cynical|/ˈsɪnɪkl/|adj. 愤世嫉俗的|He's cynical about politicians.|3
+dazzle|/ˈdæzl/|v. 使目眩；使惊叹|She was dazzled by the city lights.|3
+debris|/ˈdebriː/|n. 碎片，残骸|Debris was scattered across the road.|3
+decay|/dɪˈkeɪ/|v./n. 腐烂；衰退|Sugar causes tooth decay.|2
+deceive|/dɪˈsiːv/|v. 欺骗|Don't be deceived by appearances.|2
+decent|/ˈdiːsnt/|adj. 体面的；像样的|He earns a decent salary.|2
+deficiency|/dɪˈfɪʃnsi/|n. 缺乏，不足|Vitamin deficiency can cause disease.|3
+deficit|/ˈdefɪsɪt/|n. 赤字，逆差|The country has a large trade deficit.|3
+degrade|/dɪˈɡreɪd/|v. 降低；使退化|Pollution degrades the environment.|3
+deliberate|/dɪˈlɪbərət/|adj. 故意的；深思熟虑的|It was a deliberate attempt to mislead.|2
+denote|/dɪˈnəʊt/|v. 表示，指示|A red light denotes danger.|3
+dense|/dens/|adj. 密集的；浓厚的|They got lost in a dense forest.|2
+deposit|/dɪˈpɒzɪt/|n. 存款；押金 v. 存放|You need to pay a deposit for the flat.|2
+deprive|/dɪˈpraɪv/|v. 剥夺，使丧失|They were deprived of their basic rights.|2
+deputy|/ˈdepjuti/|n. 代表；副职|She was promoted to deputy manager.|3
+derive|/dɪˈraɪv/|v. 获得；起源于|Many English words derive from Latin.|2
+descend|/dɪˈsend/|v. 下降；遗传|The plane began to descend.|2
+designate|/ˈdezɪɡneɪt/|v. 指定，标明|This area is designated as a nature reserve.|3
+detain|/dɪˈteɪn/|v. 拘留；耽搁|Two men were detained by the police.|3
+deteriorate|/dɪˈtɪəriəreɪt/|v. 恶化|Her health deteriorated rapidly.|3
+deviate|/ˈdiːvieɪt/|v. 偏离|Don't deviate from the original plan.|3
+devise|/dɪˈvaɪz/|v. 设计，想出|They devised a new teaching method.|2
+dictate|/dɪkˈteɪt/|v. 口授；命令；决定|Supply and demand dictate prices.|3
+diminish|/dɪˈmɪnɪʃ/|v. 减少，缩小|The pain will diminish over time.|2
+diplomatic|/ˌdɪpləˈmætɪk/|adj. 外交的；圆滑的|The two countries restored diplomatic relations.|2
+discard|/dɪsˈkɑːd/|v. 丢弃，抛弃|Discard old batteries safely.|2
+discern|/dɪˈsɜːn/|v. 看出，辨别|I could just discern a figure in the dark.|3
+discriminate|/dɪˈskrɪmɪneɪt/|v. 区别；歧视|It's illegal to discriminate against women at work.|2
+disguise|/dɪsˈɡaɪz/|v./n. 伪装，掩饰|He disguised himself as a waiter.|2
+dismiss|/dɪsˈmɪs/|v. 解雇；不予考虑|He dismissed the idea as nonsense.|2
+dispatch|/dɪˈspætʃ/|v. 派遣；发送|Troops were dispatched to the area.|3
+dispense|/dɪˈspens/|v. 分发；免除（with）|Let's dispense with the formalities.|3
+disperse|/dɪˈspɜːs/|v. 分散，驱散|The crowd dispersed slowly.|3
+displace|/dɪsˈpleɪs/|v. 取代；迫使离开|Thousands were displaced by the flood.|3
+dispose|/dɪˈspəʊz/|v. 处理，处置（of）|How do you dispose of kitchen waste?|2
+disrupt|/dɪsˈrʌpt/|v. 扰乱，使中断|The strike disrupted train services.|2
+distort|/dɪˈstɔːt/|v. 歪曲，扭曲|The media distorted the facts.|3
+distract|/dɪˈstrækt/|v. 分散（注意力）|Don't distract me while I'm working.|2
+diverse|/daɪˈvɜːs/|adj. 多种多样的|The city has a diverse population.|2
+divert|/daɪˈvɜːt/|v. 转移；使转向|Traffic was diverted because of the accident.|3
+doctrine|/ˈdɒktrɪn/|n. 教义；学说|He studied religious doctrine.|3
+domain|/dəʊˈmeɪn/|n. 领域；领土|The photo is in the public domain.|3
+dominant|/ˈdɒmɪnənt/|adj. 占优势的，主导的|English is the dominant language online.|2
+dormitory|/ˈdɔːmətri/|n. 宿舍|Six students share one dormitory.|2
+drastic|/ˈdræstɪk/|adj. 激烈的；严厉的|The company made drastic changes.|3
+drain|/dreɪn/|v. 排水；耗尽 n. 下水道|The work drained all my energy.|2
+dread|/dred/|v./n. 害怕，畏惧|I dread going to the dentist.|3
+drift|/drɪft/|v. 漂流；漂泊|The boat drifted out to sea.|2
+drought|/draʊt/|n. 干旱|The crops died in the severe drought.|2
+dubious|/ˈdjuːbiəs/|adj. 可疑的；不确定的|That is a dubious claim.|3
+durable|/ˈdjʊərəbl/|adj. 耐用的|These boots are made of durable materials.|2
+dwell|/dwel/|v. 居住；详述（on）|Don't dwell on the past.|3
+eccentric|/ɪkˈsentrɪk/|adj. 古怪的|He is an eccentric old man.|3
+eclipse|/ɪˈklɪps/|n. 日食，月食|We watched a solar eclipse.|3
+elaborate|/ɪˈlæbərət/|adj. 精心的 v. 详细说明|Could you elaborate on that point?|2
+eligible|/ˈelɪdʒəbl/|adj. 有资格的|You are eligible to vote at 18.|2
+eliminate|/ɪˈlɪmɪneɪt/|v. 消除；淘汰|Our team was eliminated in the first round.|2
+eloquent|/ˈeləkwənt/|adj. 雄辩的，有口才的|She is an eloquent speaker.|3
+embark|/ɪmˈbɑːk/|v. 着手；登船|She embarked on a new career.|3
+embassy|/ˈembəsi/|n. 大使馆|He works at the Chinese Embassy in London.|2
+embody|/ɪmˈbɒdi/|v. 体现，包含|He embodies the spirit of the team.|3
+embrace|/ɪmˈbreɪs/|v. 拥抱；欣然接受|Young people embrace new ideas quickly.|2
+emerge|/iˈmɜːdʒ/|v. 出现；浮现|New problems emerged during the test.|2
+emission|/iˈmɪʃn/|n. 排放；排放物|We must cut carbon emissions.|2
+enchant|/ɪnˈtʃɑːnt/|v. 使着迷|She was enchanted by the music.|3
+encounter|/ɪnˈkaʊntə(r)/|v./n. 遭遇，偶遇|We encountered many difficulties.|2
+endeavor|/ɪnˈdevə(r)/|n./v. 努力，尽力|They endeavored to help everyone.|3
+endorse|/ɪnˈdɔːs/|v. 赞同；背书；代言|The plan was endorsed by the board.|3
+endow|/ɪnˈdaʊ/|v. 赋予；捐赠|She is endowed with great talent.|3
+endure|/ɪnˈdjʊə(r)/|v. 忍受；持久|They endured years of hardship.|2
+enforce|/ɪnˈfɔːs/|v. 实施，执行|The police enforce the law.|2
+enhance|/ɪnˈhɑːns/|v. 提高，增强|Exercise can enhance the quality of life.|2
+enlighten|/ɪnˈlaɪtn/|v. 启发，开导|The book enlightened me a lot.|3
+enroll|/ɪnˈrəʊl/|v. 注册，入学|She enrolled in an evening course.|2
+enterprise|/ˈentəpraɪz/|n. 企业；事业心|Small enterprises create many jobs.|2
+entitle|/ɪnˈtaɪtl/|v. 给予…权利；给…命名|You're entitled to a full refund.|2
+epidemic|/ˌepɪˈdemɪk/|n. 流行病 adj. 流行的|A flu epidemic spread across the city.|2
+equivalent|/ɪˈkwɪvələnt/|adj. 相等的 n. 等价物|Pay $100 or its equivalent in euros.|2
+erect|/ɪˈrekt/|v. 建立；竖立 adj. 直立的|A statue was erected in the square.|3
+erode|/ɪˈrəʊd/|v. 侵蚀，腐蚀|The cliffs are eroded by the sea.|3
+erupt|/ɪˈrʌpt/|v. 爆发，喷发|The volcano erupted last night.|2
+escalate|/ˈeskəleɪt/|v. 逐步升级|The conflict escalated quickly.|3
+essence|/ˈesns/|n. 本质，精髓|Time is of the essence.|2
+estate|/ɪˈsteɪt/|n. 地产；庄园|He works in real estate.|2
+evacuate|/ɪˈvækjueɪt/|v. 撤离，疏散|Residents were evacuated before the storm.|3
+evaporate|/ɪˈvæpəreɪt/|v. 蒸发；消失|Water evaporates when heated.|3
+evoke|/ɪˈvəʊk/|v. 唤起，引起|The music evoked childhood memories.|3
+exaggerate|/ɪɡˈzædʒəreɪt/|v. 夸大|Don't exaggerate the danger.|2
+exceed|/ɪkˈsiːd/|v. 超过|Don't exceed the speed limit.|2
+exclusive|/ɪkˈskluːsɪv/|adj. 独有的；排外的|The paper got an exclusive interview.|2
+execute|/ˈeksɪkjuːt/|v. 执行；处决|We need people to execute the plan.|2
+exempt|/ɪɡˈzempt/|adj. 被免除的 v. 免除|Small shops are exempt from the tax.|3
+exert|/ɪɡˈzɜːt/|v. 施加（影响、压力）|Parents exert pressure on their children.|3
+exotic|/ɪɡˈzɒtɪk/|adj. 异国情调的|The market sells exotic fruits.|3
+expel|/ɪkˈspel/|v. 驱逐；开除|He was expelled from school.|3
+expenditure|/ɪkˈspendɪtʃə(r)/|n. 支出，花费|Public expenditure on health has risen.|3
+exploit|/ɪkˈsplɔɪt/|v. 开发；剥削|We should not exploit natural resources carelessly.|2
+extinct|/ɪkˈstɪŋkt/|adj. 灭绝的|Dinosaurs have been extinct for millions of years.|2
+extract|/ɪkˈstrækt/|v. 提取；拔出 n. 摘录|Oil is extracted from the seeds.|2
+fabricate|/ˈfæbrɪkeɪt/|v. 捏造；制造|The whole story was fabricated.|3
+facilitate|/fəˈsɪlɪteɪt/|v. 促进，使便利|Technology facilitates communication.|2
+famine|/ˈfæmɪn/|n. 饥荒|Millions died in the famine.|3
+feasible|/ˈfiːzəbl/|adj. 可行的|Is the plan financially feasible?|2
+feeble|/ˈfiːbl/|adj. 虚弱的；无力的|That's a feeble excuse.|3
+fertile|/ˈfɜːtaɪl/|adj. 肥沃的；能生育的|The valley has fertile land.|2
+flaw|/flɔː/|n. 缺点，瑕疵|There is a flaw in your argument.|2
+flee|/fliː/|v. 逃走|They fled the country during the war.|2
+flourish|/ˈflʌrɪʃ/|v. 繁荣；茁壮成长|Business is flourishing.|2
+fluctuate|/ˈflʌktʃueɪt/|v. 波动|Vegetable prices fluctuate daily.|3
+foresee|/fɔːˈsiː/|v. 预见|No one could foresee the crisis.|3
+forge|/fɔːdʒ/|v. 锻造；伪造；建立|He was arrested for forging a signature.|3
+format|/ˈfɔːmæt/|n. 格式|Please send the file in PDF format.|2
+formidable|/ˈfɔːmɪdəbl/|adj. 可怕的；难对付的|She is a formidable opponent.|3
+formulate|/ˈfɔːmjuleɪt/|v. 制定；阐述|The government formulated a new policy.|3
+fragile|/ˈfrædʒaɪl/|adj. 易碎的，脆弱的|Be careful, the glass is fragile.|2
+fragment|/ˈfræɡmənt/|n. 碎片|Fragments of glass covered the floor.|2
+friction|/ˈfrɪkʃn/|n. 摩擦；不和|There is friction between the colleagues.|3
+frustrate|/frʌˈstreɪt/|v. 使沮丧；挫败|The constant delays frustrated him.|2
+fuse|/fjuːz/|n. 保险丝 v. 熔合|A fuse has blown in the kitchen.|3
+gauge|/ɡeɪdʒ/|n. 测量仪器 v. 估计|It's hard to gauge his reaction.|3
+genuine|/ˈdʒenjuɪn/|adj. 真正的，真诚的|Is this bag made of genuine leather?|2
+glimpse|/ɡlɪmps/|n./v. 一瞥|I caught a glimpse of her in the crowd.|2
+gloomy|/ˈɡluːmi/|adj. 阴暗的；忧郁的|It was a cold, gloomy day.|2
+gorgeous|/ˈɡɔːdʒəs/|adj. 华丽的，极好的|She wore a gorgeous dress.|2
+grant|/ɡrɑːnt/|v. 授予；承认 n. 拨款|Don't take your parents for granted.|2
+grasp|/ɡrɑːsp/|v./n. 抓住；领会|It took me a while to grasp the meaning.|2
+grieve|/ɡriːv/|v. 悲伤|She grieved for her lost dog.|3
+grim|/ɡrɪm/|adj. 严峻的；冷酷的|The news was grim.|3
+gross|/ɡrəʊs/|adj. 总的；粗俗的；严重的|Gross domestic product rose by 5%.|2
+hamper|/ˈhæmpə(r)/|v. 妨碍|Bad weather hampered rescue efforts.|3
+harass|/ˈhærəs/|v. 骚扰|She was harassed by reporters.|3
+harsh|/hɑːʃ/|adj. 严酷的；刺耳的|Plants struggle in such harsh conditions.|2
+haul|/hɔːl/|v./n. 拖，拉|They hauled the boat ashore.|3
+hazard|/ˈhæzəd/|n. 危险，危害|Smoking is a health hazard.|2
+heir|/eə(r)/|n. 继承人|He is heir to a large fortune.|3
+hinder|/ˈhɪndə(r)/|v. 阻碍|Lack of money hindered the research.|2
+hollow|/ˈhɒləʊ/|adj. 空的；空洞的|The owl lives in a hollow tree.|2
+hostile|/ˈhɒstaɪl/|adj. 敌对的|They faced a hostile crowd.|2
+humble|/ˈhʌmbl/|adj. 谦逊的；卑微的|He rose from humble beginnings.|2
+hypothesis|/haɪˈpɒθəsɪs/|n. 假设，假说|The experiment was designed to test the hypothesis.|3
+identical|/aɪˈdentɪkl/|adj. 完全相同的|They are identical twins.|2
+ignite|/ɪɡˈnaɪt/|v. 点燃；激起|His remarks ignited a heated debate.|3
+illuminate|/ɪˈluːmɪneɪt/|v. 照亮；阐明|The street was illuminated by lamps.|3
+immense|/ɪˈmens/|adj. 巨大的|She is under immense pressure.|2
+immerse|/ɪˈmɜːs/|v. 沉浸；浸没|Immerse yourself in English every day.|3
+imminent|/ˈɪmɪnənt/|adj. 即将发生的|The building is in imminent danger of collapse.|3
+impart|/ɪmˈpɑːt/|v. 传授；给予|Teachers impart knowledge to students.|3
+impartial|/ɪmˈpɑːʃl/|adj. 公正的|A judge must be impartial.|3
+implement|/ˈɪmplɪment/|v. 实施 n. 工具|The new rules will be implemented next year.|2
+implicit|/ɪmˈplɪsɪt/|adj. 含蓄的；绝对的|There was implicit criticism in her words.|3
+imply|/ɪmˈplaɪ/|v. 暗示，意味|What are you implying?|2
+impose|/ɪmˈpəʊz/|v. 强加；征（税）|The government imposed a tax on sugar.|2
+impulse|/ˈɪmpʌls/|n. 冲动；推动|I bought the shoes on impulse.|2
+incentive|/ɪnˈsentɪv/|n. 激励，动机|Bonuses are an incentive to work harder.|2
+incidence|/ˈɪnsɪdəns/|n. 发生率|The incidence of crime has fallen.|3
+incline|/ɪnˈklaɪn/|v. 倾向于 n. 斜坡|I'm inclined to agree with you.|3
+incorporate|/ɪnˈkɔːpəreɪt/|v. 包含，吸收|We incorporated your suggestions into the plan.|3
+indifferent|/ɪnˈdɪfrənt/|adj. 冷漠的，不关心的|He seems indifferent to others' feelings.|2
+indignant|/ɪnˈdɪɡnənt/|adj. 愤慨的|She was indignant at the remarks.|3
+indispensable|/ˌɪndɪˈspensəbl/|adj. 必不可少的|Water is indispensable to life.|2
+induce|/ɪnˈdjuːs/|v. 诱使；引起|This drug may induce sleep.|3
+indulge|/ɪnˈdʌldʒ/|v. 沉溺；纵容|I sometimes indulge in chocolate.|3
+inertia|/ɪˈnɜːʃə/|n. 惯性；惰性|We must overcome the inertia of the system.|3
+inevitable|/ɪnˈevɪtəbl/|adj. 不可避免的|Change is inevitable.|2
+infer|/ɪnˈfɜː(r)/|v. 推断|What can we infer from the passage?|2
+inferior|/ɪnˈfɪəriə(r)/|adj. 劣等的，下级的|These goods are inferior in quality.|2
+inflation|/ɪnˈfleɪʃn/|n. 通货膨胀|High inflation hurts the poor most.|2
+ingredient|/ɪnˈɡriːdiənt/|n. 成分；原料|Flour is the main ingredient.|2
+inhabit|/ɪnˈhæbɪt/|v. 居住于|Bears inhabit these forests.|2
+inherent|/ɪnˈhɪərənt/|adj. 固有的|There are risks inherent in any investment.|3
+inherit|/ɪnˈherɪt/|v. 继承|She inherited a fortune from her aunt.|2
+inhibit|/ɪnˈhɪbɪt/|v. 抑制，阻止|Cold weather inhibits plant growth.|3
+initiate|/ɪˈnɪʃieɪt/|v. 开始，发起|The two sides initiated peace talks.|2
+innovation|/ˌɪnəˈveɪʃn/|n. 创新，革新|Technological innovation drives growth.|2
+insert|/ɪnˈsɜːt/|v. 插入|Insert a coin into the machine.|2
+insight|/ˈɪnsaɪt/|n. 洞察力；深刻见解|The book gives insight into human nature.|2
+insulate|/ˈɪnsjuleɪt/|v. 使绝缘；隔离|We insulated the house against the cold.|3
+integrate|/ˈɪntɪɡreɪt/|v. 使结合，融入|We should integrate theory with practice.|2
+integrity|/ɪnˈteɡrəti/|n. 正直；完整|He is a man of integrity.|2
+intellect|/ˈɪntəlekt/|n. 智力|She is a woman of great intellect.|3
+intensify|/ɪnˈtensɪfaɪ/|v. 加强|The storm intensified overnight.|3
+intent|/ɪnˈtent/|n. 意图 adj. 专心的|He was intent on winning.|3
+interfere|/ˌɪntəˈfɪə(r)/|v. 干涉；妨碍|Don't interfere in my affairs.|2
+intermediate|/ˌɪntəˈmiːdiət/|adj. 中级的，中间的|This course is for intermediate learners.|2
+interpret|/ɪnˈtɜːprɪt/|v. 解释；口译|How do you interpret this dream?|2
+intervene|/ˌɪntəˈviːn/|v. 干预；介入|The government had to intervene.|3
+intimate|/ˈɪntɪmət/|adj. 亲密的|They have been intimate friends for years.|2
+intricate|/ˈɪntrɪkət/|adj. 错综复杂的|The carpet has an intricate pattern.|3
+intrude|/ɪnˈtruːd/|v. 闯入；打扰|I don't want to intrude on your privacy.|3
+intuition|/ˌɪntjuˈɪʃn/|n. 直觉|Trust your intuition.|3
+invade|/ɪnˈveɪd/|v. 侵略|The army invaded the country.|2
+irony|/ˈaɪrəni/|n. 讽刺，反语|The irony is that he never took the advice himself.|3
+irrigate|/ˈɪrɪɡeɪt/|v. 灌溉|Farmers irrigate the fields with river water.|3
+isolate|/ˈaɪsəleɪt/|v. 使隔离|The village was isolated by heavy snow.|2
+juvenile|/ˈdʒuːvənaɪl/|adj. 青少年的 n. 未成年人|Juvenile crime is a social problem.|3
+keen|/kiːn/|adj. 热衷的；敏锐的|She is keen on music.|2
+kindle|/ˈkɪndl/|v. 点燃；激起|The trip kindled her interest in history.|3
+landlord|/ˈlændlɔːd/|n. 房东|My landlord raised the rent.|2
+latitude|/ˈlætɪtjuːd/|n. 纬度；自由|The city lies at a latitude of 30°N.|3
+launch|/lɔːntʃ/|v. 发射；发起 n. 发布|The company will launch a new product.|2
+legislation|/ˌledʒɪsˈleɪʃn/|n. 立法；法规|New legislation on pollution was passed.|3
+legitimate|/lɪˈdʒɪtɪmət/|adj. 合法的；合理的|Do you have a legitimate reason for being late?|3
+lens|/lenz/|n. 透镜，镜头|Clean the camera lens carefully.|2
+liable|/ˈlaɪəbl/|adj. 有责任的；易于…的|You are liable to catch cold in this weather.|3
+liberal|/ˈlɪbərəl/|adj. 自由的；开明的|Her parents hold liberal views.|2
+linger|/ˈlɪŋɡə(r)/|v. 逗留；徘徊|The smell of coffee lingered in the room.|3
+literacy|/ˈlɪtərəsi/|n. 读写能力|Computer literacy is essential today.|3
+literal|/ˈlɪtərəl/|adj. 字面的|A literal translation often sounds strange.|2
+locomotive|/ˌləʊkəˈməʊtɪv/|n. 机车，火车头|A steam locomotive pulled the train.|3
+lofty|/ˈlɒfti/|adj. 高耸的；崇高的|She has lofty ideals.|3
+longitude|/ˈlɒŋɡɪtjuːd/|n. 经度|The island lies at longitude 120°E.|3
+magnify|/ˈmæɡnɪfaɪ/|v. 放大；夸大|The lens magnifies objects ten times.|3
+maintenance|/ˈmeɪntənəns/|n. 维修，保养|Regular car maintenance saves money.|2
+mandatory|/ˈmændətəri/|adj. 强制的，法定的|Wearing a helmet is mandatory.|3
+manipulate|/məˈnɪpjuleɪt/|v. 操纵；巧妙地处理|Some media manipulate public opinion.|3
+marginal|/ˈmɑːdʒɪnl/|adj. 边缘的；微小的|There was only a marginal increase in sales.|3
+mature|/məˈtʃʊə(r)/|adj. 成熟的 v. 成熟|He is mature for his age.|2
+maximize|/ˈmæksɪmaɪz/|v. 使最大化|Companies aim to maximize profits.|2
+mechanism|/ˈmekənɪzəm/|n. 机制；机械装置|The body has a natural defence mechanism.|2
+mediate|/ˈmiːdieɪt/|v. 调解|A neutral party was asked to mediate the dispute.|3
+medieval|/ˌmediˈiːvl/|adj. 中世纪的|She studies medieval history.|3
+merchandise|/ˈmɜːtʃəndaɪs/|n. 商品|The store sells a wide range of merchandise.|3
+merit|/ˈmerɪt/|n. 优点；价值 v. 值得|Each case is judged on its merits.|2
+migrate|/maɪˈɡreɪt/|v. 迁移，迁徙|Many birds migrate south in winter.|2
+milestone|/ˈmaɪlstəʊn/|n. 里程碑|The moon landing was a milestone in history.|3
+mingle|/ˈmɪŋɡl/|v. 混合；交往|The host mingled with the guests.|3
+miniature|/ˈmɪnətʃə(r)/|adj. 微型的 n. 缩影|The boy plays with a miniature train.|3
+mischief|/ˈmɪstʃɪf/|n. 恶作剧；顽皮|The kids are always getting into mischief.|3
+mobilize|/ˈməʊbəlaɪz/|v. 动员|They mobilized support for the campaign.|3
+modest|/ˈmɒdɪst/|adj. 谦虚的；适度的|There was a modest increase in prices.|2
+momentum|/məˈmentəm/|n. 势头；动量|The campaign is gaining momentum.|3
+monetary|/ˈmʌnɪtri/|adj. 货币的|The central bank sets monetary policy.|3
+monopoly|/məˈnɒpəli/|n. 垄断|The company has a monopoly on the market.|3
+morale|/məˈrɑːl/|n. 士气|The victory boosted morale.|3
+mortgage|/ˈmɔːɡɪdʒ/|n./v. 抵押（贷款）|It took them 20 years to pay off the mortgage.|3
+motive|/ˈməʊtɪv/|n. 动机|Police are searching for the motive for the crime.|2
+mourn|/mɔːn/|v. 哀悼|The nation mourned the loss of its hero.|3
+municipal|/mjuːˈnɪsɪpl/|adj. 市政的|The municipal government built a new park.|3
+mutual|/ˈmjuːtʃuəl/|adj. 相互的；共同的|Friendship is based on mutual understanding.|2
+naive|/naɪˈiːv/|adj. 天真的，幼稚的|It's naive to believe everything he says.|2
+narrative|/ˈnærətɪv/|n. 叙述 adj. 叙事的|The film has a simple narrative.|3
+negligible|/ˈneɡlɪdʒəbl/|adj. 可忽略的|The cost is negligible.|3
+negotiate|/nɪˈɡəʊʃieɪt/|v. 谈判，协商|We are negotiating a new contract.|2
+nominate|/ˈnɒmɪneɪt/|v. 提名；任命|She was nominated for an Oscar.|3
+norm|/nɔːm/|n. 标准；规范|Every society has its social norms.|3
+notable|/ˈnəʊtəbl/|adj. 值得注意的；著名的|It was a notable achievement.|2
+notorious|/nəʊˈtɔːriəs/|adj. 臭名昭著的|The area is notorious for crime.|3
+nourish|/ˈnʌrɪʃ/|v. 滋养；培育|This cream nourishes the skin.|3
+novelty|/ˈnɒvlti/|n. 新奇；新鲜事物|The novelty soon wore off.|3
+nuisance|/ˈnjuːsns/|n. 讨厌的人或事|The noise is a real nuisance.|3
+nutrition|/njuˈtrɪʃn/|n. 营养|Good nutrition is vital for children.|2
+oblige|/əˈblaɪdʒ/|v. 迫使；帮忙|We were obliged to leave early.|2
+obscure|/əbˈskjʊə(r)/|adj. 模糊的；无名的 v. 遮掩|The quote comes from an obscure poet.|3
+obsess|/əbˈses/|v. 使着迷|He is obsessed with money.|3
+obsolete|/ˈɒbsəliːt/|adj. 过时的，废弃的|This technology is now obsolete.|3
+obstacle|/ˈɒbstəkl/|n. 障碍|She overcame many obstacles.|2
+offend|/əˈfend/|v. 冒犯|I didn't mean to offend you.|2
+offset|/ˈɒfset/|v. 抵消，弥补|Higher prices will offset the extra cost.|3
+ongoing|/ˈɒnɡəʊɪŋ/|adj. 进行中的|There is an ongoing investigation.|2
+orient|/ˈɔːrient/|v. 使适应；以…为方向|We run a customer-oriented business.|3
+orthodox|/ˈɔːθədɒks/|adj. 正统的|He uses orthodox teaching methods.|3
+outbreak|/ˈaʊtbreɪk/|n. 爆发|There has been an outbreak of flu.|2
+outlet|/ˈaʊtlet/|n. 出口；发泄途径；商店|Sport is a good outlet for stress.|3
+outlook|/ˈaʊtlʊk/|n. 观点；前景|She has a positive outlook on life.|2
+output|/ˈaʊtpʊt/|n. 产量；输出|Industrial output rose last year.|2
+outrage|/ˈaʊtreɪdʒ/|n. 愤怒；暴行 v. 激怒|The decision caused public outrage.|3
+outset|/ˈaʊtset/|n. 开端|Make the rules clear from the outset.|3
+overflow|/ˌəʊvəˈfləʊ/|v. 溢出|The river overflowed after the rain.|3
+overhead|/ˌəʊvəˈhed/|adv. 在头顶上 n. 经常费用|Planes flew overhead.|3
+overlap|/ˌəʊvəˈlæp/|v. 重叠|Our interests overlap a little.|3
+overwhelm|/ˌəʊvəˈwelm/|v. 压倒；使不知所措|She was overwhelmed by grief.|2
+paradox|/ˈpærədɒks/|n. 悖论；矛盾的事|It's a paradox that more choice can make us less happy.|3
+parallel|/ˈpærəlel/|adj. 平行的 n. 相似处|Draw two parallel lines.|2
+paralyze|/ˈpærəlaɪz/|v. 使瘫痪|The strike paralyzed the city.|3
+partial|/ˈpɑːʃl/|adj. 部分的；偏爱的|I'm partial to sweets.|3
+patent|/ˈpætnt/|n. 专利 v. 获得专利|He applied for a patent for his invention.|3
+pathetic|/pəˈθetɪk/|adj. 可怜的；可悲的|What a pathetic excuse!|3
+pedestrian|/pəˈdestriən/|n. 行人|Use the pedestrian crossing.|2
+peculiar|/pɪˈkjuːliə(r)/|adj. 奇怪的；特有的|There's a peculiar smell in here.|2
+penetrate|/ˈpenətreɪt/|v. 穿透；渗入|The firm hopes to penetrate the Asian market.|3
+pension|/ˈpenʃn/|n. 养老金|My grandfather lives on a pension.|2
+perceive|/pəˈsiːv/|v. 察觉；认为|I perceived a change in her mood.|2
+perpetual|/pəˈpetʃuəl/|adj. 永久的；不断的|I'm tired of the perpetual noise.|3
+persist|/pəˈsɪst/|v. 坚持；持续|If symptoms persist, see a doctor.|2
+perspective|/pəˈspektɪv/|n. 观点；视角|Try to see it from a different perspective.|2
+pessimistic|/ˌpesɪˈmɪstɪk/|adj. 悲观的|He is pessimistic about the future.|2
+petition|/pəˈtɪʃn/|n. 请愿书 v. 请愿|Thousands signed the petition.|3
+pharmacy|/ˈfɑːməsi/|n. 药房|There is a 24-hour pharmacy nearby.|2
+pilgrim|/ˈpɪlɡrɪm/|n. 朝圣者|Pilgrims travelled from far away.|3
+pioneer|/ˌpaɪəˈnɪə(r)/|n. 先驱 v. 开创|She is a pioneer in AI research.|2
+plead|/pliːd/|v. 恳求；辩护|He pleaded guilty to the charge.|3
+pledge|/pledʒ/|n./v. 保证，誓言|The leaders made a pledge of support.|3
+plunge|/plʌndʒ/|v./n. 跳入；骤降|Oil prices plunged last week.|3
+ponder|/ˈpɒndə(r)/|v. 沉思|She pondered the question for a while.|3
+portable|/ˈpɔːtəbl/|adj. 便携的|I always carry a portable charger.|2
+posture|/ˈpɒstʃə(r)/|n. 姿势；态度|Good posture protects your back.|3
+practitioner|/prækˈtɪʃənə(r)/|n. 从业者（尤指医生、律师）|Consult a medical practitioner.|3
+precaution|/prɪˈkɔːʃn/|n. 预防措施|Take precautions against fire.|3
+precede|/prɪˈsiːd/|v. 在…之前|I couldn't sleep the night preceding the exam.|3
+precise|/prɪˈsaɪs/|adj. 精确的|We need precise measurements.|2
+predecessor|/ˈpriːdɪsesə(r)/|n. 前任；前身|The new model is faster than its predecessor.|3
+preliminary|/prɪˈlɪmɪnəri/|adj. 初步的|Preliminary results look promising.|3
+premier|/ˈpremiə(r)/|n. 总理 adj. 首要的|The Premier visited the flooded area.|3
+premise|/ˈpremɪs/|n. 前提；（pl.）房屋|The argument rests on a false premise.|3
+prescribe|/prɪˈskraɪb/|v. 开（药）；规定|The doctor prescribed some medicine.|2
+preserve|/prɪˈzɜːv/|v. 保护；保存|We must preserve the environment.|2
+prestige|/preˈstiːʒ/|n. 威望，声望|The job carries great prestige.|3
+presume|/prɪˈzjuːm/|v. 假定，推测|I presume you have heard the news.|3
+prevail|/prɪˈveɪl/|v. 盛行；获胜|Justice will prevail in the end.|3
+prevalent|/ˈprevələnt/|adj. 流行的，普遍的|The disease is prevalent in hot regions.|3
+privilege|/ˈprɪvəlɪdʒ/|n. 特权；荣幸|It's a privilege to meet you.|2
+probe|/prəʊb/|v./n. 探查，调查|Police are probing into the cause of the fire.|3
+proclaim|/prəˈkleɪm/|v. 宣告|The country proclaimed independence.|3
+proficiency|/prəˈfɪʃnsi/|n. 熟练，精通|The job requires English proficiency.|3
+profound|/prəˈfaʊnd/|adj. 深刻的|The book had a profound influence on me.|2
+prohibit|/prəˈhɪbɪt/|v. 禁止|Smoking is prohibited here.|2
+prolong|/prəˈlɒŋ/|v. 延长|Exercise can prolong your life.|3
+prominent|/ˈprɒmɪnənt/|adj. 突出的；著名的|He is a prominent scientist.|2
+prone|/prəʊn/|adj. 易于…的|People are more prone to errors when tired.|3
+propaganda|/ˌprɒpəˈɡændə/|n. 宣传|The film was pure political propaganda.|3
+propel|/prəˈpel/|v. 推进，推动|The boat is propelled by wind.|3
+prospect|/ˈprɒspekt/|n. 前景；可能性|Job prospects for engineers are good.|2
+prosper|/ˈprɒspə(r)/|v. 繁荣，兴旺|The town prospered after the railway came.|2
+provoke|/prəˈvəʊk/|v. 激怒；引起|His comments provoked an angry reaction.|3
+prudent|/ˈpruːdnt/|adj. 谨慎的|It would be prudent to save some money.|3
+publicity|/pʌbˈlɪsəti/|n. 宣传；名声|The event got a lot of media publicity.|2
+pursuit|/pəˈsjuːt/|n. 追求；追赶|Everyone has the right to the pursuit of happiness.|2
+quota|/ˈkwəʊtə/|n. 定额，配额|The country set an import quota.|3
+radiate|/ˈreɪdieɪt/|v. 辐射；散发|She radiates confidence.|3
+radical|/ˈrædɪkl/|adj. 根本的；激进的|The system needs radical changes.|2
+random|/ˈrændəm/|adj. 随机的|Names were chosen at random.|2
+ratio|/ˈreɪʃiəʊ/|n. 比率|The ratio of boys to girls is 3:2.|2
+rational|/ˈræʃnəl/|adj. 理性的；合理的|Try to make a rational decision.|2
+reconcile|/ˈrekənsaɪl/|v. 调和；使和好|It's hard to reconcile work and family.|3
+recruit|/rɪˈkruːt/|v. 招募 n. 新成员|The company plans to recruit new staff.|2
+redundant|/rɪˈdʌndənt/|adj. 多余的；被裁员的|Delete the redundant words.|3
+refine|/rɪˈfaɪn/|v. 精炼；改进|Sugar is refined from sugar cane.|3
+refrain|/rɪˈfreɪn/|v. 克制，避免（from）|Please refrain from smoking.|3
+refund|/ˈriːfʌnd/|n./v. 退款|I asked for a refund.|2
+rehearse|/rɪˈhɜːs/|v. 排练|The actors rehearsed the play all week.|3
+reign|/reɪn/|n./v. 统治；支配|The reign of Queen Victoria lasted 63 years.|3
+reinforce|/ˌriːɪnˈfɔːs/|v. 加强，巩固|The example reinforces the main idea.|2
+relay|/ˈriːleɪ/|n. 接力 v. 转达|Our team won the relay race.|3
+relevant|/ˈreləvənt/|adj. 相关的|Please provide all relevant information.|2
+relieve|/rɪˈliːv/|v. 减轻；解除|The medicine will relieve the pain.|2
+reluctant|/rɪˈlʌktənt/|adj. 不情愿的|He was reluctant to admit his mistake.|2
+render|/ˈrendə(r)/|v. 使成为；给予；表达|The accident rendered him helpless.|3
+renovate|/ˈrenəveɪt/|v. 翻新|They renovated an old house.|3
+reproduce|/ˌriːprəˈdjuːs/|v. 复制；繁殖|The painting was reproduced in many books.|3
+resent|/rɪˈzent/|v. 怨恨|I resent being told what to do.|3
+reside|/rɪˈzaɪd/|v. 居住|She now resides abroad.|3
+resign|/rɪˈzaɪn/|v. 辞职；使顺从|He resigned from his job.|2
+resolute|/ˈrezəluːt/|adj. 坚决的|The country needs a resolute leader.|3
+restrain|/rɪˈstreɪn/|v. 抑制，控制|Try to restrain your anger.|3
+retain|/rɪˈteɪn/|v. 保持，保留|Clay retains heat well.|2
+retrieve|/rɪˈtriːv/|v. 取回；检索|The system can retrieve data quickly.|3
+revenue|/ˈrevənjuː/|n. 收入，税收|Tax revenue fell this year.|2
+reverse|/rɪˈvɜːs/|v. 颠倒；撤销 adj. 相反的|List the names in reverse order.|2
+revise|/rɪˈvaɪz/|v. 修订；复习|I need to revise for the exam.|2
+revive|/rɪˈvaɪv/|v. 复兴；苏醒|The plan aims to revive the economy.|3
+rigid|/ˈrɪdʒɪd/|adj. 僵硬的；严格的|The school has rigid rules.|3
+rigorous|/ˈrɪɡərəs/|adj. 严格的；严谨的|Athletes go through rigorous training.|3
+ritual|/ˈrɪtʃuəl/|n. 仪式 adj. 例行的|Morning coffee is my daily ritual.|3
+rival|/ˈraɪvl/|n. 对手 v. 与…竞争|The two companies are business rivals.|2
+robust|/rəʊˈbʌst/|adj. 强健的；坚固的|The country has a robust economy.|3
+rotate|/rəʊˈteɪt/|v. 旋转；轮流|The earth rotates once a day.|3
+rugged|/ˈrʌɡɪd/|adj. 崎岖的；结实的|They hiked through rugged mountains.|3
+rumor|/ˈruːmə(r)/|n. 谣言|Don't spread rumors.|2
+rural|/ˈrʊərəl/|adj. 农村的|Life in rural areas is quieter.|2
+sacred|/ˈseɪkrɪd/|adj. 神圣的|The mountain is a sacred place.|3
+sanction|/ˈsæŋkʃn/|n. 制裁；批准|The UN imposed economic sanctions.|3
+scandal|/ˈskændl/|n. 丑闻|The minister resigned after the scandal.|3
+scope|/skəʊp/|n. 范围；机会|That question is beyond the scope of this book.|2
+segment|/ˈseɡmənt/|n. 部分，片段|Young people are a key segment of the market.|3
+shatter|/ˈʃætə(r)/|v. 粉碎；破坏|The news shattered my dreams.|3
+shed|/ʃed/|v. 流（泪）；脱落；散发 n. 棚|The study sheds light on the problem.|3
+shrink|/ʃrɪŋk/|v. 收缩；退缩|My shirt shrank in the wash.|2
+shrug|/ʃrʌɡ/|v./n. 耸肩|He just shrugged his shoulders.|2
+simultaneous|/ˌsɪmlˈteɪniəs/|adj. 同时的|She works in simultaneous interpretation.|3
+skeptical|/ˈskeptɪkl/|adj. 怀疑的|Scientists are skeptical of the claims.|2
+sober|/ˈsəʊbə(r)/|adj. 清醒的；冷静的|Stay sober if you are driving.|3
+solemn|/ˈsɒləm/|adj. 庄严的|It was a solemn ceremony.|3
+solidarity|/ˌsɒlɪˈdærəti/|n. 团结|Workers showed solidarity with each other.|3
+sophisticated|/səˈfɪstɪkeɪtɪd/|adj. 复杂的；老练的|The lab uses sophisticated technology.|2
+sovereign|/ˈsɒvrɪn/|adj. 独立自主的 n. 君主|Every sovereign state has its own laws.|3
+span|/spæn/|n. 跨度；期间 v. 横跨|Children have a short attention span.|3
+sparkle|/ˈspɑːkl/|v. 闪耀|Her eyes sparkled with excitement.|3
+specify|/ˈspesɪfaɪ/|v. 具体说明|Please specify the delivery date.|2
+spectacle|/ˈspektəkl/|n. 景象；（pl.）眼镜|The fireworks were a magnificent spectacle.|3
+spectrum|/ˈspektrəm/|n. 光谱；范围|There is a broad spectrum of opinions.|3
+speculate|/ˈspekjuleɪt/|v. 推测；投机|It's useless to speculate about the future.|3
+sphere|/sfɪə(r)/|n. 球体；范围，领域|The region is within their sphere of influence.|3
+spontaneous|/spɒnˈteɪniəs/|adj. 自发的|The audience broke into spontaneous applause.|3
+stagger|/ˈstæɡə(r)/|v. 蹒跚；使震惊|I was staggered by the news.|3
+stagnant|/ˈstæɡnənt/|adj. 停滞的；不流动的|The economy remained stagnant.|3
+stain|/steɪn/|n. 污渍 v. 弄脏|There's a coffee stain on your shirt.|2
+stake|/steɪk/|n. 赌注；利害关系|Our future is at stake.|3
+stationary|/ˈsteɪʃənri/|adj. 静止的|The car hit a stationary truck.|3
+stationery|/ˈsteɪʃənri/|n. 文具|The shop sells office stationery.|3
+statistic|/stəˈtɪstɪk/|n. 统计数字（pl. 统计学）|Official statistics show a fall in crime.|2
+steer|/stɪə(r)/|v. 驾驶；引导|She steered the conversation to another topic.|3
+stimulate|/ˈstɪmjuleɪt/|v. 刺激，激发|Lower taxes may stimulate growth.|2
+strain|/streɪn/|n. 压力；拉伤 v. 拉紧|She has been under great strain lately.|3
+strive|/straɪv/|v. 努力，奋斗|We always strive for success.|2
+subordinate|/səˈbɔːdɪnət/|adj. 下级的 n. 下属|He treats his subordinates fairly.|3
+subscribe|/səbˈskraɪb/|v. 订阅；赞同|I subscribe to two magazines.|3
+subsequent|/ˈsʌbsɪkwənt/|adj. 随后的|Subsequent events proved him right.|2
+subsidy|/ˈsʌbsədi/|n. 补贴|Farmers receive government subsidies.|3
+substantial|/səbˈstænʃl/|adj. 大量的；实质的|They spent a substantial amount of money.|2
+substitute|/ˈsʌbstɪtjuːt/|n. 代替品 v. 代替|You can substitute honey for sugar.|2
+subtle|/ˈsʌtl/|adj. 微妙的|There is a subtle difference between them.|2
+suburb|/ˈsʌbɜːb/|n. 郊区|They live in the suburbs.|2
+successive|/səkˈsesɪv/|adj. 连续的|The team won three successive games.|3
+suffice|/səˈfaɪs/|v. 足够|A short note will suffice.|3
+summit|/ˈsʌmɪt/|n. 顶点；峰会|The leaders met at a summit.|2
+superficial|/ˌsuːpəˈfɪʃl/|adj. 表面的；肤浅的|He has only a superficial knowledge of the subject.|3
+superior|/suːˈpɪəriə(r)/|adj. 较好的；上级的|This product is superior to others.|2
+supervise|/ˈsuːpəvaɪz/|v. 监督，管理|She supervises a team of ten.|2
+supplement|/ˈsʌplɪment/|n./v. 补充|He takes vitamin supplements.|2
+suppress|/səˈpres/|v. 镇压；抑制|She tried to suppress a laugh.|3
+surge|/sɜːdʒ/|n./v. 激增；涌动|There was a surge in demand.|3
+surpass|/səˈpɑːs/|v. 超过，胜过|The results surpassed our expectations.|3
+surplus|/ˈsɜːpləs/|n. 过剩；顺差|The country has a trade surplus.|3
+susceptible|/səˈseptəbl/|adj. 易受影响的|Children are susceptible to colds.|3
+suspend|/səˈspend/|v. 暂停；悬挂|Classes were suspended because of the storm.|2
+sustain|/səˈsteɪn/|v. 维持；支撑；遭受|It's hard to sustain such fast growth.|2
+swap|/swɒp/|v./n. 交换|Can we swap seats?|3
+symptom|/ˈsɪmptəm/|n. 症状；征兆|Fever is a common symptom of flu.|2
+synthetic|/sɪnˈθetɪk/|adj. 合成的；人造的|The jacket is made of synthetic fibres.|3
+tackle|/ˈtækl/|v. 处理，解决|We must tackle the problem now.|2
+tangible|/ˈtændʒəbl/|adj. 有形的；实际的|The plan brought tangible benefits.|3
+tedious|/ˈtiːdiəs/|adj. 乏味的，冗长的|Data entry is a tedious job.|3
+tempt|/tempt/|v. 引诱|I was tempted to quit.|2
+tenant|/ˈtenənt/|n. 房客，租户|The tenant pays the rent monthly.|3
+tentative|/ˈtentətɪv/|adj. 试探性的；暂定的|We made a tentative plan.|3
+terminate|/ˈtɜːmɪneɪt/|v. 终止|They decided to terminate the contract.|3
+terrain|/təˈreɪn/|n. 地形|The car can handle rough terrain.|3
+testify|/ˈtestɪfaɪ/|v. 作证；证明|She agreed to testify in court.|3
+thrive|/θraɪv/|v. 兴旺；茁壮成长|These plants thrive in sunlight.|2
+tolerate|/ˈtɒləreɪt/|v. 容忍|I can't tolerate the noise any longer.|2
+toll|/təʊl/|n. 通行费；伤亡人数|The death toll has risen to 50.|3
+torment|/ˈtɔːment/|n./v. 折磨|He suffered years of mental torment.|3
+toxic|/ˈtɒksɪk/|adj. 有毒的|The factory released toxic chemicals.|2
+trait|/treɪt/|n. 特征，特点|Patience is one of her best traits.|2
+tranquil|/ˈtræŋkwɪl/|adj. 平静的|We stayed by a tranquil lake.|3
+transaction|/trænˈzækʃn/|n. 交易；处理|Most transactions are now online.|3
+transient|/ˈtrænziənt/|adj. 短暂的|Fame is often transient.|3
+transit|/ˈtrænzɪt/|n. 运输；过境|Some goods were damaged in transit.|3
+transmit|/trænzˈmɪt/|v. 传送；传播|The virus is transmitted by mosquitoes.|2
+transparent|/trænsˈpærənt/|adj. 透明的|The box is made of transparent plastic.|2
+trigger|/ˈtrɪɡə(r)/|v. 触发 n. 扳机|Smoke can trigger the alarm.|2
+trivial|/ˈtrɪviəl/|adj. 琐碎的|Don't argue over trivial matters.|2
+tuition|/tjuˈɪʃn/|n. 学费；教学|Tuition fees have risen sharply.|2
+turbulent|/ˈtɜːbjələnt/|adj. 动荡的|They lived through turbulent times.|3
+ultimate|/ˈʌltɪmət/|adj. 最终的；根本的|Our ultimate goal is to win.|2
+undergo|/ˌʌndəˈɡəʊ/|v. 经历，遭受|He will undergo surgery next week.|2
+undermine|/ˌʌndəˈmaɪn/|v. 破坏，削弱|Criticism can undermine confidence.|3
+underlying|/ˌʌndəˈlaɪɪŋ/|adj. 潜在的；根本的|We need to find the underlying cause.|3
+unify|/ˈjuːnɪfaɪ/|v. 统一|The king unified the country.|3
+upgrade|/ˌʌpˈɡreɪd/|v./n. 升级|You should upgrade the software.|2
+uphold|/ʌpˈhəʊld/|v. 维护，支持|Judges must uphold the law.|3
+utilize|/ˈjuːtəlaɪz/|v. 利用|We should utilize resources better.|2
+utmost|/ˈʌtməʊst/|adj. 最大的 n. 极限|I'll do my utmost to help.|3
+utter|/ˈʌtə(r)/|v. 说出 adj. 完全的|That's utter nonsense!|3
+vacant|/ˈveɪkənt/|adj. 空的；空缺的|Is this seat vacant?|2
+vague|/veɪɡ/|adj. 模糊的|He gave a vague answer.|2
+valid|/ˈvælɪd/|adj. 有效的；合理的|Your ticket is valid for a month.|2
+vanish|/ˈvænɪʃ/|v. 消失|The thief vanished into thin air.|2
+variable|/ˈveəriəbl/|adj. 可变的 n. 变量|The weather here is highly variable.|2
+venture|/ˈventʃə(r)/|n. 冒险事业 v. 冒险|The two firms started a joint venture.|2
+verdict|/ˈvɜːdɪkt/|n. 裁决；结论|The jury reached a verdict.|3
+verify|/ˈverɪfaɪ/|v. 核实，证实|Journalists must verify the facts.|2
+versatile|/ˈvɜːsətaɪl/|adj. 多才多艺的；多用途的|He is a versatile actor.|3
+veteran|/ˈvetərən/|n. 老兵；老手|My grandfather is a war veteran.|3
+viable|/ˈvaɪəbl/|adj. 可行的|Is this a viable option?|3
+vicious|/ˈvɪʃəs/|adj. 恶毒的；凶猛的|Poverty and poor health form a vicious circle.|3
+vigorous|/ˈvɪɡərəs/|adj. 精力充沛的；强有力的|Do vigorous exercise three times a week.|2
+violate|/ˈvaɪəleɪt/|v. 违反；侵犯|Those who violate the rules will be punished.|2
+virtual|/ˈvɜːtʃuəl/|adj. 虚拟的；实际上的|Virtual reality is used in training.|2
+virtue|/ˈvɜːtʃuː/|n. 美德；优点|Patience is a virtue.|2
+visual|/ˈvɪʒuəl/|adj. 视觉的|She studies visual arts.|2
+vital|/ˈvaɪtl/|adj. 至关重要的|Teamwork is vital to success.|2
+vivid|/ˈvɪvɪd/|adj. 生动的；鲜艳的|She gave a vivid description of the trip.|2
+vocation|/vəʊˈkeɪʃn/|n. 职业；使命感|Teaching is her true vocation.|3
+vulnerable|/ˈvʌlnərəbl/|adj. 易受伤害的|Old computers are vulnerable to attack.|2
+warrant|/ˈwɒrənt/|n. 授权令 v. 使有必要|The police had a search warrant.|3
+wholesome|/ˈhəʊlsəm/|adj. 有益健康的|Children need wholesome food.|3
+withdraw|/wɪðˈdrɔː/|v. 撤回；取（钱）|I need to withdraw some money.|2
+withstand|/wɪðˈstænd/|v. 经受住|The material can withstand high temperatures.|3
+wrinkle|/ˈrɪŋkl/|n. 皱纹 v. 起皱|She has wrinkles around her eyes.|3
+yield|/jiːld/|v. 产出；屈服 n. 产量|He refused to yield to pressure.|2`;
+
+const WORDS = RAW.trim().split('\n').map(l => { const [w, ph, m, ex, lv] = l.split('|'); return { w, ph, m, ex, lv: +lv }; });
+const BY = Object.fromEntries(WORDS.map(x => [x.w, x]));
+const KEY = 'cet4-deck-v1', DAY = 864e5, IV = [0, 0, 1, 3, 7, 15, 30];
+const $ = id => document.getElementById(id);
+
+let S = {};
+try { S = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { S = {}; }
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+const rec = w => S[w] || (S[w] = { b: 0, d: 0, x: 0 });
+const status = w => { const s = S[w]; return !s || !s.b ? 'new' : s.b >= 4 ? 'done' : 'learn'; };
+const STATUS_TXT = { new: '未学', learn: '学习中', done: '已掌握' };
+const LV_TXT = { 2: '常考', 3: '偏难' };
+
+function rate(w, r) {
+  const s = rec(w), now = Date.now();
+  if (r === 1) { s.b = 1; s.x++; s.d = now; }
+  else if (r === 2) { s.b = Math.max(2, s.b - 1); s.d = now + IV[s.b] * DAY; }
+  else { s.b = s.b ? Math.min(s.b + 1, 6) : 3; s.d = now + IV[s.b] * DAY; }
+  save(); stats();
+}
+
+const esc = t => t.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+function hl(ex, w) {
+  const stem = w.length > 5 ? w.slice(0, w.length - 2) : w.replace(/[ey]$/, '');
+  return esc(ex).replace(new RegExp('\\b(' + stem + '\\w*)', 'i'), '<mark>$1</mark>');
+}
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+const canSpeak = 'speechSynthesis' in window;
+function speak(w) {
+  if (!canSpeak) return;
+  try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(w); u.lang = 'en-US'; u.rate = .9; speechSynthesis.speak(u); } catch (e) {}
+}
+const SPK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>';
+const sayBtn = w => canSpeak ? `<button type="button" class="say" data-say="${w}" aria-label="朗读 ${w}">${SPK}</button>` : '';
+
+let toastT;
+function toast(t) { const el = $('toast'); el.textContent = t; el.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => el.hidden = true, 1800); }
+
+/* stats */
+function stats() {
+  const now = Date.now(); let done = 0, learn = 0, due = 0, star = 0;
+  for (const x of WORDS) { const s = S[x.w]; const st = status(x.w);
+    if (st === 'done') done++; else if (st === 'learn') learn++;
+    if (s && s.b && s.d <= now) due++; if (s && s.s) star++; }
+  $('sDone').textContent = done; $('sLearn').textContent = learn; $('sDue').textContent = due;
+  $('sNew').textContent = WORDS.length - done - learn; $('sStar').textContent = star;
+  $('sBar').style.width = (done / WORDS.length * 100).toFixed(1) + '%';
+}
+
+function pool() {
+  const sc = $('scope').value;
+  return WORDS.filter(x => sc === 'all' ? true : sc === 'star' ? S[x.w] && S[x.w].s : sc === 'learn' ? status(x.w) === 'learn' : x.lv === +sc);
+}
+
+/* ---- cards ---- */
+let queue = [], cur = null, again = new Set(), flipped = false, tally = { 1: 0, 2: 0, 3: 0 }, setSize = 0, early = false;
+
+function buildSession(force) {
+  const now = Date.now(), p = pool(), n = +$('size').value;
+  const due = p.filter(x => S[x.w] && S[x.w].b && S[x.w].d <= now).sort((a, b) => S[a.w].d - S[b.w].d);
+  const fresh = shuffle(p.filter(x => status(x.w) === 'new'));
+  queue = [...due, ...fresh].slice(0, n);
+  early = false;
+  if (!queue.length && force) { queue = shuffle(p).slice(0, n); early = true; }
+  again = new Set(); tally = { 1: 0, 2: 0, 3: 0 }; setSize = queue.length;
+  nextCard();
+}
+
+function chipsFor(x) {
+  const st = status(x.w), s = S[x.w];
+  return `<span class="chip l${x.lv}">${LV_TXT[x.lv]}</span> <span class="chip ${st}">${STATUS_TXT[st]}</span> ` +
+    `<button type="button" class="star" data-star="${x.w}" aria-pressed="${!!(s && s.s)}" aria-label="加入生词本">★</button>`;
+}
+
+function nextCard() {
+  cur = queue.shift() || null; flipped = false;
+  $('cRate').hidden = true;
+  if (!cur) { renderSummary(); return; }
+  $('cFlip').hidden = false;
+  $('cProg').textContent = `${early ? '提前复习 · ' : ''}本组剩余 ${queue.length + 1} 张`;
+  $('cChips').innerHTML = chipsFor(cur);
+  $('cMain').innerHTML = `<div class="hw">${cur.w}</div><div class="ph">${esc(cur.ph)} ${sayBtn(cur.w)}</div><div class="tap">先回想意思，再点卡片翻面</div>`;
+}
+
+function flip() {
+  if (!cur || flipped) return; flipped = true;
+  $('cMain').innerHTML = `<div class="hw">${cur.w}</div><div class="ph">${esc(cur.ph)} ${sayBtn(cur.w)}</div>
+    <div class="back"><div class="mean">${esc(cur.m)}</div><div class="ex">${hl(cur.ex, cur.w)}</div></div>`;
+  $('cFlip').hidden = true; $('cRate').hidden = false;
+}
+
+function answer(r) {
+  if (!cur || !flipped) return;
+  rate(cur.w, r); tally[r]++;
+  if (r === 1) queue.splice(Math.min(3, queue.length), 0, cur);
+  else if (r === 2 && !again.has(cur.w)) { again.add(cur.w); queue.splice(Math.min(6, queue.length), 0, cur); }
+  nextCard();
+}
+
+function renderSummary() {
+  $('cFlip').hidden = true; $('cRate').hidden = true; $('cChips').innerHTML = ''; $('cProg').textContent = '';
+  const p = pool();
+  if (!setSize) {
+    const learned = p.filter(x => status(x.w) !== 'new').length;
+    $('cMain').innerHTML = `<div class="summary"><h2>这个范围暂时没有要背的词</h2>
+      <p>${p.length ? `新词已全部学过，复习也都还没到期（${learned} 个在排期中）。` : '这个范围是空的，先在词表里点 ★ 收藏几个词。'}</p>
+      <div class="row">${p.length ? '<button class="btn primary" type="button" data-act="early">提前复习一组</button>' : ''}
+      <button class="btn" type="button" data-act="all">切到全部词</button></div></div>`;
+    return;
+  }
+  $('cMain').innerHTML = `<div class="summary"><h2>这一组完成了</h2>
+    <p>${setSize} 个词 · 认识 ${tally[3]} 次 · 模糊 ${tally[2]} 次 · 不认识 ${tally[1]} 次</p>
+    <div class="row"><button class="btn primary" type="button" data-act="more">再来一组</button>
+    <a class="btn" href="#quiz" style="text-decoration:none">去测验巩固</a></div></div>`;
+  setSize = 0;
+}
+
+$('cMain').addEventListener('click', e => {
+  const a = e.target.closest('[data-act]');
+  if (a) { e.stopPropagation(); const v = a.dataset.act;
+    if (v === 'all') { $('scope').value = 'all'; buildSession(); }
+    else buildSession(v === 'early'); return; }
+  if (e.target.closest('.say')) return;
+  if (cur) flip();
+});
+$('flip').addEventListener('click', flip);
+$('cRate').addEventListener('click', e => { const b = e.target.closest('[data-r]'); if (b) answer(+b.dataset.r); });
+
+/* ---- quiz ---- */
+let qAns = null, qDone = false, qRight = 0, qTotal = 0, qOpts = [];
+function nextQ() {
+  let p = pool(); if (!p.length) p = WORDS;
+  qAns = p[Math.random() * p.length | 0]; qDone = false;
+  const others = shuffle(WORDS.filter(x => x.w !== qAns.w && x.m !== qAns.m)).slice(0, 3);
+  qOpts = shuffle([qAns, ...others]);
+  const zh = $('dir').value === 'zh';
+  $('qChips').innerHTML = chipsFor(qAns);
+  $('qPrompt').innerHTML = zh ? `<div class="mean">${esc(qAns.m)}</div>` : `<div class="hw">${qAns.w}</div><div class="ph">${esc(qAns.ph)} ${sayBtn(qAns.w)}</div>`;
+  $('qOpts').innerHTML = qOpts.map((o, i) => `<button type="button" class="opt ${zh ? 'en' : ''}" data-i="${i}"><kbd>${i + 1}</kbd><span>${zh ? o.w : esc(o.m)}</span></button>`).join('');
+  $('qFb').textContent = '选一个答案，或按 1–4';
+  $('qScore').textContent = qTotal ? `本轮 ${qRight}/${qTotal} 正确` : '本轮还没答题';
+}
+function choose(i) {
+  if (qDone || !qOpts[i]) return; qDone = true; qTotal++;
+  const ok = qOpts[i] === qAns, btns = $('qOpts').querySelectorAll('.opt');
+  btns.forEach((b, j) => { b.disabled = true; if (qOpts[j] === qAns) b.classList.add('right'); });
+  if (ok) { qRight++; $('qFb').innerHTML = `答对了 · <span style="font-family:var(--f-head);font-style:italic">${hl(qAns.ex, qAns.w)}</span>`; }
+  else { btns[i].classList.add('wrong'); rate(qAns.w, 1);
+    $('qFb').innerHTML = `<b>${qAns.w}</b> ${esc(qAns.m)} · 已加入“学习中 / 错词”`; }
+  $('qScore').textContent = `本轮 ${qRight}/${qTotal} 正确`;
+  $('qChips').innerHTML = chipsFor(qAns);
+  if (canSpeak && $('dir').value === 'zh') speak(qAns.w);
+}
+$('qOpts').addEventListener('click', e => { const b = e.target.closest('[data-i]'); if (b) choose(+b.dataset.i); });
+$('qNext').addEventListener('click', nextQ);
+$('dir').addEventListener('change', nextQ);
+
+/* ---- list ---- */
+let listRows = [];
+function renderList() {
+  const q = $('q').value.trim().toLowerCase(), f = $('lf').value, sc = $('scope').value;
+  const base = pool();
+  listRows = base.filter(x => (!q || x.w.includes(q) || x.m.includes(q)) &&
+    (f === 'all' || (f === 'star' ? S[x.w] && S[x.w].s : status(x.w) === f)));
+  $('lCount').textContent = `${listRows.length} / ${WORDS.length} 词`;
+  $('lBody').innerHTML = listRows.length ? listRows.map(x => { const st = status(x.w), s = S[x.w];
+    return `<tr><td><button type="button" class="star" data-star="${x.w}" aria-pressed="${!!(s && s.s)}" aria-label="收藏 ${x.w}">★</button></td>
+      <td class="w">${x.w} ${sayBtn(x.w)}</td><td class="p">${esc(x.ph)}</td>
+      <td>${esc(x.m)}<span class="exs">${hl(x.ex, x.w)}</span></td>
+      <td><span class="chip l${x.lv}">${LV_TXT[x.lv]}</span><br><span class="chip ${st}">${STATUS_TXT[st]}</span></td></tr>`; }).join('')
+    : `<tr><td colspan="5" class="empty">没有符合条件的词。换个关键词，或把上面的“范围”改回全部词。</td></tr>`;
+}
+$('q').addEventListener('input', renderList);
+$('lf').addEventListener('change', renderList);
+$('copy').addEventListener('click', () => {
+  const text = listRows.map(x => [x.w, x.ph, x.m, x.ex].join('\t')).join('\n');
+  const fallback = () => { const t = document.createElement('textarea'); t.value = text; document.body.appendChild(t); t.select();
+    let ok = false; try { ok = document.execCommand('copy'); } catch (e) {} t.remove(); toast(ok ? `已复制 ${listRows.length} 个词` : '复制失败，请换个浏览器再试'); };
+  try { navigator.clipboard.writeText(text).then(() => toast(`已复制 ${listRows.length} 个词（可直接粘到表格）`), fallback); } catch (e) { fallback(); }
+});
+
+/* ---- shared ---- */
+document.addEventListener('click', e => {
+  const sp = e.target.closest('[data-say]'); if (sp) { e.stopPropagation(); speak(sp.dataset.say); return; }
+  const st = e.target.closest('[data-star]');
+  if (st) { e.stopPropagation(); const s = rec(st.dataset.star); s.s = !s.s; save(); stats();
+    document.querySelectorAll(`[data-star="${st.dataset.star}"]`).forEach(b => b.setAttribute('aria-pressed', s.s));
+    toast(s.s ? '已加入生词本' : '已移出生词本'); }
+}, true);
+
+let resetArm = 0;
+$('reset').addEventListener('click', () => {
+  if (Date.now() - resetArm < 3000) { S = {}; save(); stats(); resetArm = 0; $('reset').textContent = '清空进度'; toast('进度已清空'); refresh(); return; }
+  resetArm = Date.now(); $('reset').textContent = '再点一次确认清空';
+  setTimeout(() => { if (resetArm && Date.now() - resetArm >= 3000) { $('reset').textContent = '清空进度'; resetArm = 0; } }, 3100);
+});
+
+let tab = 'cards';
+const HINTS = { cards: '空格 翻面 · 1/2/3 评分 · P 发音', quiz: '1–4 选择 · Enter 下一题 · P 发音', list: '' };
+function refresh() { if (tab === 'cards') buildSession(); else if (tab === 'quiz') nextQ(); else renderList(); }
+function route() {
+  const h = location.hash.slice(1); tab = ['cards', 'quiz', 'list'].includes(h) ? h : 'cards';
+  document.querySelectorAll('.tabs a').forEach(a => a.dataset.tab === tab ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current'));
+  $('v-cards').hidden = tab !== 'cards'; $('v-quiz').hidden = tab !== 'quiz'; $('v-list').hidden = tab !== 'list';
+  $('sizeWrap').hidden = tab !== 'cards'; $('dirWrap').hidden = tab !== 'quiz';
+  $('hint').textContent = HINTS[tab];
+  refresh();
+}
+window.addEventListener('hashchange', route);
+$('scope').addEventListener('change', refresh);
+$('size').addEventListener('change', () => tab === 'cards' && buildSession());
+
+document.addEventListener('keydown', e => {
+  if (e.target.matches('input,select,textarea') || e.ctrlKey || e.metaKey || e.altKey) return;
+  const k = e.key.toLowerCase();
+  if (tab === 'cards') {
+    if ((k === ' ' || k === 'enter') && cur && !flipped) { e.preventDefault(); flip(); }
+    else if (['1', '2', '3'].includes(k)) answer(+k);
+    else if (k === 'p' && cur) speak(cur.w);
+  } else if (tab === 'quiz') {
+    if (['1', '2', '3', '4'].includes(k)) choose(+k - 1);
+    else if (k === 'enter' && qDone) { e.preventDefault(); nextQ(); }
+    else if (k === 'p' && qAns) speak(qAns.w);
+  }
+});
+
+$('totalN').textContent = WORDS.length;
+stats(); route();
+</script>
+</body>
+</html>
